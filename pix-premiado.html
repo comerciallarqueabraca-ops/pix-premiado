@@ -129,11 +129,9 @@
 
 </div>
 <script>
-  const TOTAL     = 30;
-  const PRECO     = 5;
-  const ABATEPAY_URL = 'COLE_AQUI_O_LINK_DA_ABATEPAY'; // substituir pelo link real
-  const SUCCESS_URL  = 'https://lojalarqueabraca.com.br/pagamento-confirmado.html';
-  const APPS_SCRIPT  = 'COLE_AQUI_A_URL_DO_APPS_SCRIPT';
+  const TOTAL    = 30;
+  const PRECO    = 5;
+  const APPS_SCRIPT = 'COLE_AQUI_A_URL_DO_APPS_SCRIPT';
 
   const takenNumbers = []; // ex: [3, 15, 22] — atualizar conforme venderem
   let selected = new Set();
@@ -194,43 +192,47 @@
     }
   }
 
-  function submitForm() {
+  async function submitForm() {
     const btn = document.getElementById('btnSubmit');
     btn.disabled = true;
-    btn.innerHTML = '<span>Aguarde...</span>';
+    btn.innerHTML = '<span>⏳ Gerando cobrança...</span>';
 
     const nums = [...selected].sort((a,b) => a-b);
-    const data = {
-      numeros:   nums.join(', '),
-      quantidade: nums.length,
-      total:     nums.length * PRECO,
-      nome:      document.getElementById('nome').value.trim(),
-      telefone:  document.getElementById('telefone').value.trim(),
-      email:     document.getElementById('email').value.trim(),
-      data:      new Date().toLocaleString('pt-BR'),
-    };
+    const nome     = document.getElementById('nome').value.trim();
+    const telefone = document.getElementById('telefone').value.trim();
+    const email    = document.getElementById('email').value.trim();
 
-    // Enviar para Google Sheets
+    // Enviar para Google Sheets (em paralelo, sem bloquear)
     if (APPS_SCRIPT !== 'COLE_AQUI_A_URL_DO_APPS_SCRIPT') {
       fetch(APPS_SCRIPT, {
-        method:'POST', mode:'no-cors',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify(data)
+        method: 'POST', mode: 'no-cors',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ numeros: nums.join(', '), nome, telefone, email, data: new Date().toLocaleString('pt-BR') })
       });
     }
 
-    // Montar URL de retorno com os números
-    const returnUrl = encodeURIComponent(
-      SUCCESS_URL + '?numeros=' + nums.join('-') + '&nome=' + encodeURIComponent(data.nome)
-    );
+    try {
+      // Chamar a Vercel Function que cria a cobrança na AbacatePay
+      const res = await fetch('/api/criar-cobranca', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ numeros: nums, nome, telefone, email })
+      });
 
-    // Redirecionar para AbatePay
-    // A AbatePay geralmente aceita ?amount= e ?return_url= — ajuste conforme a doc deles
-    if (ABATEPAY_URL !== 'COLE_AQUI_O_LINK_DA_ABATEPAY') {
-      window.location.href = ABATEPAY_URL + '?return_url=' + returnUrl;
-    } else {
-      // Preview local: vai direto para a página de sucesso
-      window.location.href = SUCCESS_URL + '?numeros=' + nums.join('-') + '&nome=' + encodeURIComponent(data.nome);
+      const json = await res.json();
+
+      if (!res.ok || !json.url) {
+        throw new Error(json.error || 'Erro ao gerar cobrança');
+      }
+
+      // Redirecionar para a página de pagamento da AbacatePay
+      window.location.href = json.url;
+
+    } catch (err) {
+      btn.disabled = false;
+      const total = (nums.length * PRECO).toFixed(2).replace('.', ',');
+      btn.innerHTML = `<span>Pagar R$ ${total}</span><span>›</span>`;
+      alert('Erro ao gerar cobrança: ' + err.message + '\nTente novamente.');
     }
   }
 </script>
