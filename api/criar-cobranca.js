@@ -11,7 +11,7 @@ export default async function handler(req, res) {
 
   const quantidade = numeros.length;
   const numerosStr = numeros.join(', ');
-  const total = quantidade * 1; // TESTE: 1 centavo por número
+  const total = quantidade * 100; // TESTE: R$1,00 por número
   const headers = {
     'Authorization': `Bearer ${process.env.ABACATEPAY_API_KEY}`,
     'Content-Type': 'application/json',
@@ -39,7 +39,7 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         name: `Pix Premiado – Nº ${numerosStr}`,
         description: `Participação no Pix Premiado Lar que Abraça. Números: ${numerosStr}`,
-        price: 1,
+        price: 100,
         currency: 'BRL',
         externalId: `pix-premiado-${Date.now()}`,
       }),
