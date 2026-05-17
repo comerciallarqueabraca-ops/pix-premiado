@@ -36,13 +36,11 @@ export default async function handler(req, res) {
             price: 500, // R$5,00 por número
           },
         ],
-        customer: {
-          name: nome,
-          cellphone: telefone,
-          email: email,
-        },
         metadata: {
           numeros: numerosStr,
+          nome: nome,
+          telefone: telefone,
+          email: email,
           total_reais: `R$ ${(total / 100).toFixed(2).replace('.', ',')}`,
         },
       }),
