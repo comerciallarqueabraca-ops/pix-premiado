@@ -32,7 +32,7 @@ export default async function handler(req, res) {
   }
 
   if (req.method === 'POST') {
-    const { titulo, descricao, quantidade_numeros, preco_centavos, data_sorteio } = req.body;
+    const { titulo, descricao, quantidade_numeros, preco_centavos, data_sorteio, imagem_url } = req.body;
     if (!titulo) return res.status(400).json({ error: 'Título obrigatório' });
 
     // Desativa sorteios anteriores
@@ -45,6 +45,7 @@ export default async function handler(req, res) {
       quantidade_numeros: quantidade_numeros || 30,
       preco_centavos: preco_centavos || 500,
       data_sorteio: data_sorteio || null,
+      imagem_url: imagem_url || null,
       ativo: true,
     }, 'return=representation');
 

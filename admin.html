@@ -8,94 +8,118 @@
     *{margin:0;padding:0;box-sizing:border-box;}
     body{font-family:'Segoe UI',sans-serif;background:#f5f5f5;min-height:100vh;}
 
-    /* LOGIN */
     .login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#B5526A,#7A9E7E);}
     .login-box{background:#fff;border-radius:20px;padding:40px;width:100%;max-width:380px;box-shadow:0 8px 32px rgba(0,0,0,.15);}
     .login-box h1{color:#B5526A;font-size:1.4rem;margin-bottom:6px;}
     .login-box p{color:#888;font-size:.85rem;margin-bottom:24px;}
     .login-box input{width:100%;padding:12px 14px;border:1.5px solid #e0e0e0;border-radius:10px;font-size:.95rem;margin-bottom:12px;outline:none;}
     .login-box input:focus{border-color:#B5526A;}
-    .btn{width:100%;padding:13px;background:#B5526A;color:#fff;border:none;border-radius:10px;font-size:1rem;font-weight:700;cursor:pointer;}
+
+    .btn{padding:13px 20px;background:#B5526A;color:#fff;border:none;border-radius:10px;font-size:.95rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;}
     .btn:hover{background:#a04460;}
+    .btn-full{width:100%;}
     .btn-green{background:#7A9E7E;} .btn-green:hover{background:#6a8e6e;}
-    .btn-sm{width:auto;padding:7px 16px;font-size:.85rem;border-radius:8px;}
+    .btn-red{background:#c62828;} .btn-red:hover{background:#b71c1c;}
     .btn-outline{background:#fff;color:#B5526A;border:1.5px solid #B5526A;} .btn-outline:hover{background:#fdf0f3;}
+    .btn-sm{padding:7px 14px;font-size:.82rem;border-radius:8px;}
+    .btn-purple{background:#7c3aed;} .btn-purple:hover{background:#6d28d9;}
     .error-msg{color:#B5526A;font-size:.85rem;margin-top:8px;text-align:center;}
 
-    /* ADMIN */
     .admin-screen{display:none;}
     .topbar{background:#B5526A;color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;}
     .topbar h1{font-size:1.1rem;}
-    .content{max-width:900px;margin:0 auto;padding:24px 16px;}
+    .content{max-width:960px;margin:0 auto;padding:24px 16px;}
 
-    /* TABS */
-    .tabs{display:flex;gap:8px;margin-bottom:20px;}
+    .tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
     .tab{padding:9px 20px;border-radius:10px;border:1.5px solid #ddd;background:#fff;cursor:pointer;font-weight:600;color:#666;}
     .tab.active{background:#B5526A;color:#fff;border-color:#B5526A;}
 
-    /* CARDS */
     .card{background:#fff;border-radius:14px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.07);margin-bottom:16px;}
-    .card h3{color:#B5526A;margin-bottom:14px;}
+    .card h3{color:#B5526A;margin-bottom:14px;font-size:1rem;}
+
     .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
     .form-row.full{grid-template-columns:1fr;}
     label{font-size:.82rem;font-weight:700;color:#555;display:block;margin-bottom:4px;}
-    input[type=text],input[type=number],input[type=date],textarea{width:100%;padding:10px 12px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:.9rem;outline:none;}
+    input[type=text],input[type=number],input[type=date],textarea,input[type=email],input[type=password]{width:100%;padding:10px 12px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:.9rem;outline:none;}
     input:focus,textarea:focus{border-color:#B5526A;}
 
-    /* SORTEIO ATIVO */
+    /* PROGRESS */
+    .progress-wrap{margin:12px 0;}
+    .progress-label{display:flex;justify-content:space-between;font-size:.85rem;color:#555;margin-bottom:6px;}
+    .progress-bar{height:18px;background:#f0e0e5;border-radius:20px;overflow:hidden;}
+    .progress-fill{height:100%;background:linear-gradient(90deg,#B5526A,#F2B8C6);border-radius:20px;transition:width .5s ease;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;font-size:.75rem;font-weight:700;color:#fff;}
+
+    .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+    .stat{background:#fff;border-radius:12px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.07);text-align:center;}
+    .stat .val{font-size:1.6rem;font-weight:900;color:#B5526A;}
+    .stat .lbl{font-size:.75rem;color:#888;margin-top:4px;}
+
     .sorteio-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:700;}
     .badge-ativo{background:#e8f5e9;color:#2e7d32;}
     .badge-inativo{background:#fce4ec;color:#c62828;}
 
-    /* TABELA */
     table{width:100%;border-collapse:collapse;font-size:.85rem;}
     th{background:#f5f5f5;padding:10px 12px;text-align:left;color:#555;font-weight:700;}
     td{padding:10px 12px;border-bottom:1px solid #f0f0f0;color:#333;}
     tr:hover td{background:#fdf0f3;}
-
     .nums-badge{background:#F2B8C6;color:#B5526A;padding:2px 8px;border-radius:20px;font-size:.8rem;font-weight:700;}
+
     .hidden{display:none;}
-    .section-title{font-size:.8rem;font-weight:700;color:#B5526A;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;}
-    .stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;}
-    .stat{background:#fff;border-radius:12px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.07);text-align:center;}
-    .stat .val{font-size:1.8rem;font-weight:900;color:#B5526A;}
-    .stat .lbl{font-size:.8rem;color:#888;margin-top:4px;}
+
+    /* UPLOAD */
+    .upload-area{border:2px dashed #F2B8C6;border-radius:12px;padding:20px;text-align:center;cursor:pointer;background:#fdf8f9;transition:all .2s;}
+    .upload-area:hover{border-color:#B5526A;background:#fdf0f3;}
+    .upload-area img{max-height:120px;border-radius:8px;margin-top:8px;}
+    .upload-area p{color:#888;font-size:.85rem;}
+
+    /* SORTEIO MODAL */
+    .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:100;}
+    .modal{background:#fff;border-radius:20px;padding:32px;max-width:440px;width:90%;text-align:center;}
+    .modal h2{color:#B5526A;font-size:1.3rem;margin-bottom:8px;}
+    .numero-sorteado{font-size:5rem;font-weight:900;color:#B5526A;margin:16px 0;line-height:1;}
+    .ganhador-info{background:#fdf0f3;border-radius:12px;padding:16px;margin:12px 0;text-align:left;}
+    .ganhador-info p{font-size:.9rem;color:#555;margin-bottom:4px;}
+    .ganhador-info strong{color:#B5526A;}
+
+    @media(max-width:600px){
+      .stat-grid{grid-template-columns:repeat(2,1fr);}
+      .form-row{grid-template-columns:1fr;}
+    }
   </style>
 </head>
 <body>
 
-<!-- LOGIN -->
 <div class="login-screen" id="loginScreen">
   <div class="login-box">
     <h1>Painel Admin</h1>
     <p>Pix Premiado – Lar que Abraça</p>
     <input type="email" id="loginEmail" placeholder="E-mail"/>
     <input type="password" id="loginSenha" placeholder="Senha"/>
-    <button class="btn" onclick="fazerLogin()">Entrar</button>
+    <button class="btn btn-full" onclick="fazerLogin()">Entrar</button>
     <div class="error-msg" id="loginErro"></div>
   </div>
 </div>
 
-<!-- ADMIN -->
 <div class="admin-screen" id="adminScreen">
   <div class="topbar">
     <h1>Pix Premiado — Admin</h1>
-    <button class="btn btn-sm btn-outline" onclick="sair()" style="color:#fff;border-color:#fff;">Sair</button>
+    <button class="btn btn-sm btn-outline" onclick="sair()" style="color:#fff;border-color:rgba(255,255,255,.5)">Sair</button>
   </div>
 
   <div class="content">
     <div class="tabs">
-      <div class="tab active" onclick="showTab('dashboard')">Dashboard</div>
-      <div class="tab" onclick="showTab('novo')">Novo Sorteio</div>
-      <div class="tab" onclick="showTab('participantes')">Participantes</div>
+      <div class="tab active" data-tab="dashboard" onclick="showTab('dashboard',this)">Dashboard</div>
+      <div class="tab" data-tab="novo" onclick="showTab('novo',this)">Novo Sorteio</div>
+      <div class="tab" data-tab="participantes" onclick="showTab('participantes',this)">Participantes</div>
     </div>
 
     <!-- DASHBOARD -->
     <div id="tab-dashboard">
       <div class="stat-grid">
-        <div class="stat"><div class="val" id="statNums">-</div><div class="lbl">Números vendidos</div></div>
+        <div class="stat"><div class="val" id="statVendidos">-</div><div class="lbl">Números vendidos</div></div>
         <div class="stat"><div class="val" id="statTotal">-</div><div class="lbl">Total arrecadado</div></div>
         <div class="stat"><div class="val" id="statRestam">-</div><div class="lbl">Números restantes</div></div>
+        <div class="stat"><div class="val" id="statPct">-</div><div class="lbl">Vendido</div></div>
       </div>
 
       <div class="card" id="sorteioAtivoCard">
@@ -114,8 +138,9 @@
       <div class="card">
         <h3>Criar Novo Sorteio</h3>
         <p style="color:#888;font-size:.85rem;margin-bottom:16px;">Ao criar um novo sorteio, o atual será encerrado automaticamente.</p>
+
         <div class="form-row full">
-          <label>Título</label>
+          <label>Título *</label>
           <input type="text" id="novoTitulo" placeholder="Ex: Pix Premiado – Maio 2026"/>
         </div>
         <div class="form-row full">
@@ -125,11 +150,11 @@
         <div class="form-row">
           <div>
             <label>Quantidade de números</label>
-            <input type="number" id="novaQtd" value="30" min="1" max="200"/>
+            <input type="number" id="novaQtd" value="30" min="1" max="500"/>
           </div>
           <div>
             <label>Preço por número (R$)</label>
-            <input type="number" id="novoPreco" value="5" min="1" step="0.50"/>
+            <input type="number" id="novoPreco" value="5.00" min="1" step="0.50"/>
           </div>
         </div>
         <div class="form-row">
@@ -138,17 +163,44 @@
             <input type="date" id="novaData"/>
           </div>
         </div>
-        <button class="btn btn-green" onclick="criarSorteio()" style="margin-top:8px;">Criar Sorteio</button>
-        <div id="novoMsg" style="margin-top:10px;color:#2e7d32;font-size:.9rem;"></div>
+
+        <div class="form-row full">
+          <label>Imagem do sorteio</label>
+          <div class="upload-area" id="uploadArea" onclick="document.getElementById('imgInput').click()">
+            <p>📷 Clique para escolher uma imagem</p>
+            <img id="imgPreview" style="display:none"/>
+          </div>
+          <input type="file" id="imgInput" accept="image/*" style="display:none" onchange="previewImagem(this)"/>
+        </div>
+
+        <button class="btn btn-green btn-full" onclick="criarSorteio()" style="margin-top:8px;">Criar Sorteio</button>
+        <div id="novoMsg" style="margin-top:10px;font-size:.9rem;"></div>
       </div>
     </div>
 
     <!-- PARTICIPANTES -->
     <div id="tab-participantes" class="hidden">
       <div class="card">
-        <h3>Participantes do Sorteio Ativo</h3>
+        <h3>Participantes</h3>
+        <div style="margin-bottom:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <button class="btn btn-purple btn-sm" onclick="realizarSorteio()">🎲 Realizar Sorteio</button>
+          <button class="btn btn-sm btn-outline" onclick="exportarCSV()">⬇ Exportar CSV</button>
+        </div>
         <div id="tabelaParticipantes">Carregando...</div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL SORTEIO -->
+<div class="modal-bg hidden" id="modalSorteio">
+  <div class="modal">
+    <h2>🎉 Número Sorteado!</h2>
+    <div class="numero-sorteado" id="numeroSorteado">-</div>
+    <div class="ganhador-info" id="ganhadorInfo"></div>
+    <div style="display:flex;gap:8px;justify-content:center;margin-top:16px;">
+      <button class="btn btn-green" onclick="salvarGanhador()">✓ Confirmar ganhador</button>
+      <button class="btn btn-outline" onclick="fecharModal()">Fechar</button>
     </div>
   </div>
 </div>
@@ -156,9 +208,14 @@
 <script>
   const SUPABASE_URL = 'https://mjirxarpnptxwznnopbr.supabase.co';
   const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qaXJ4YXJwbnB0eHd6bm5vcGJyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwNDEwMjksImV4cCI6MjA5NDYxNzAyOX0.1Z-OExvb8-xSNew7BZ6I3ZJ0055rsznb7pPSf9XOWw4';
+
   let token = null;
   let sorteioAtivo = null;
+  let participantesAtivos = [];
+  let numerosVendidos = [];
+  let ganhadorAtual = null;
 
+  // LOGIN
   async function fazerLogin() {
     const email = document.getElementById('loginEmail').value.trim();
     const senha = document.getElementById('loginSenha').value;
@@ -185,91 +242,143 @@
     document.getElementById('adminScreen').style.display = 'none';
   }
 
-  function showTab(tab) {
-    ['dashboard','novo','participantes'].forEach(t => {
-      document.getElementById(`tab-${t}`).classList.add('hidden');
-    });
-    document.querySelectorAll('.tab').forEach((el,i) => el.classList.remove('active'));
+  function showTab(tab, el) {
+    ['dashboard','novo','participantes'].forEach(t => document.getElementById(`tab-${t}`).classList.add('hidden'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     document.getElementById(`tab-${tab}`).classList.remove('hidden');
-    event.target.classList.add('active');
+    el.classList.add('active');
     if (tab === 'participantes') carregarParticipantes();
   }
 
+  // CARREGAR DADOS
   async function carregarDados() {
-    const res = await fetch('/api/admin-sorteios', {
-      headers: { 'Authorization': `Bearer ${token}` },
-    });
+    const res = await fetch('/api/admin-sorteios', { headers: { 'Authorization': `Bearer ${token}` } });
     const sorteios = await res.json();
-
     sorteioAtivo = sorteios.find(s => s.ativo) || null;
 
-    // Stats
     if (sorteioAtivo) {
       const numsRes = await fetch(`${SUPABASE_URL}/rest/v1/numeros_vendidos?sorteio_id=eq.${sorteioAtivo.id}&select=numero`, {
         headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}` },
       });
-      const nums = await numsRes.json();
-      const vendidos = nums.length;
+      numerosVendidos = (await numsRes.json()).map(n => n.numero);
+      const vendidos = numerosVendidos.length;
+      const total = sorteioAtivo.quantidade_numeros;
       const preco = sorteioAtivo.preco_centavos / 100;
-      document.getElementById('statNums').textContent = vendidos;
+      const pct = total > 0 ? Math.round(vendidos / total * 100) : 0;
+
+      document.getElementById('statVendidos').textContent = vendidos;
       document.getElementById('statTotal').textContent = `R$ ${(vendidos * preco).toFixed(2).replace('.',',')}`;
-      document.getElementById('statRestam').textContent = sorteioAtivo.quantidade_numeros - vendidos;
+      document.getElementById('statRestam').textContent = total - vendidos;
+      document.getElementById('statPct').textContent = `${pct}%`;
 
       document.getElementById('sorteioAtivoInfo').innerHTML = `
-        <strong style="font-size:1.1rem">${sorteioAtivo.titulo}</strong><br>
-        <span class="sorteio-badge badge-ativo">● Ativo</span>
-        <span style="color:#888;font-size:.85rem;margin-left:8px">${sorteioAtivo.quantidade_numeros} números · R$ ${preco.toFixed(2).replace('.',',')} cada${sorteioAtivo.data_sorteio ? ' · Sorteio: '+new Date(sorteioAtivo.data_sorteio).toLocaleDateString('pt-BR') : ''}</span>
-        ${sorteioAtivo.descricao ? `<p style="color:#666;font-size:.85rem;margin-top:8px">${sorteioAtivo.descricao}</p>` : ''}
-        <div style="margin-top:12px">
-          <button class="btn btn-sm" style="background:#c62828;" onclick="encerrarSorteio('${sorteioAtivo.id}')">Encerrar sorteio</button>
-        </div>
-      `;
+        <div style="display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;">
+          ${sorteioAtivo.imagem_url ? `<img src="${sorteioAtivo.imagem_url}" style="width:100px;height:100px;object-fit:cover;border-radius:10px;flex-shrink:0">` : ''}
+          <div style="flex:1;min-width:200px">
+            <strong style="font-size:1.05rem">${sorteioAtivo.titulo}</strong>
+            <span class="sorteio-badge badge-ativo" style="margin-left:8px">● Ativo</span><br>
+            <span style="color:#888;font-size:.85rem">${total} números · R$ ${preco.toFixed(2).replace('.',',')} cada${sorteioAtivo.data_sorteio ? ' · Sorteio: '+new Date(sorteioAtivo.data_sorteio+'T12:00:00').toLocaleDateString('pt-BR') : ''}</span>
+            ${sorteioAtivo.descricao ? `<p style="color:#666;font-size:.85rem;margin-top:6px">${sorteioAtivo.descricao}</p>` : ''}
+            <div class="progress-wrap">
+              <div class="progress-label"><span>${vendidos} de ${total} vendidos</span><span>${pct}%</span></div>
+              <div class="progress-bar"><div class="progress-fill" style="width:${pct}%">${pct > 10 ? pct+'%' : ''}</div></div>
+            </div>
+            <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+              <button class="btn btn-sm btn-red" onclick="encerrarSorteio('${sorteioAtivo.id}')">Encerrar sorteio</button>
+            </div>
+          </div>
+        </div>`;
     } else {
+      ['statVendidos','statTotal','statRestam'].forEach(id => document.getElementById(id).textContent = '0');
+      document.getElementById('statPct').textContent = '0%';
       document.getElementById('sorteioAtivoInfo').innerHTML = '<p style="color:#888">Nenhum sorteio ativo. Crie um novo na aba "Novo Sorteio".</p>';
-      document.getElementById('statNums').textContent = '0';
-      document.getElementById('statTotal').textContent = 'R$ 0,00';
-      document.getElementById('statRestam').textContent = '0';
     }
 
-    // Lista todos
+    // Lista sorteios
     document.getElementById('listaSorteios').innerHTML = sorteios.length ? `
       <table>
-        <thead><tr><th>Título</th><th>Números</th><th>Preço</th><th>Data</th><th>Status</th></tr></thead>
+        <thead><tr><th>Título</th><th>Números</th><th>Preço</th><th>Data</th><th>Ganhador</th><th>Status</th></tr></thead>
         <tbody>${sorteios.map(s => `
           <tr>
             <td>${s.titulo}</td>
             <td>${s.quantidade_numeros}</td>
             <td>R$ ${(s.preco_centavos/100).toFixed(2).replace('.',',')}</td>
-            <td>${s.data_sorteio ? new Date(s.data_sorteio).toLocaleDateString('pt-BR') : '—'}</td>
-            <td><span class="sorteio-badge ${s.ativo ? 'badge-ativo':'badge-inativo'}">${s.ativo ? '● Ativo':'Encerrado'}</span></td>
+            <td>${s.data_sorteio ? new Date(s.data_sorteio+'T12:00:00').toLocaleDateString('pt-BR') : '—'}</td>
+            <td>${s.ganhador_numero ? `Nº ${s.ganhador_numero} — ${s.ganhador_nome||''}` : '—'}</td>
+            <td><span class="sorteio-badge ${s.ativo?'badge-ativo':'badge-inativo'}">${s.ativo?'● Ativo':'Encerrado'}</span></td>
           </tr>`).join('')}
         </tbody>
       </table>` : '<p style="color:#888">Nenhum sorteio criado ainda.</p>';
   }
 
+  // IMAGEM
+  function previewImagem(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      document.getElementById('imgPreview').src = e.target.result;
+      document.getElementById('imgPreview').style.display = 'block';
+      document.querySelector('#uploadArea p').textContent = file.name;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  async function uploadImagem() {
+    const file = document.getElementById('imgInput').files[0];
+    if (!file) return null;
+    const res = await fetch('/api/upload-imagem', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': file.type },
+      body: file,
+    });
+    const data = await res.json();
+    return data.url || null;
+  }
+
+  // CRIAR SORTEIO
   async function criarSorteio() {
     const titulo = document.getElementById('novoTitulo').value.trim();
     if (!titulo) { alert('Informe o título do sorteio'); return; }
-    const preco = parseFloat(document.getElementById('novoPreco').value) * 100;
+
+    const msg = document.getElementById('novoMsg');
+    msg.style.color = '#555';
+    msg.textContent = 'Salvando...';
+
+    const imagem_url = await uploadImagem();
+
+    const preco = Math.round(parseFloat(document.getElementById('novoPreco').value) * 100);
     const res = await fetch('/api/admin-sorteios', {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
         titulo,
-        descricao: document.getElementById('novaDesc').value.trim(),
+        descricao: document.getElementById('novaDesc').value.trim() || null,
         quantidade_numeros: parseInt(document.getElementById('novaQtd').value),
         preco_centavos: preco,
         data_sorteio: document.getElementById('novaData').value || null,
+        imagem_url,
       }),
     });
     const data = await res.json();
-    document.getElementById('novoMsg').textContent = '✓ Sorteio criado com sucesso!';
-    setTimeout(() => { document.getElementById('novoMsg').textContent = ''; }, 3000);
+    if (data.error) { msg.style.color = '#B5526A'; msg.textContent = 'Erro: ' + data.error; return; }
+
+    msg.style.color = '#2e7d32';
+    msg.textContent = '✓ Sorteio criado com sucesso!';
+    // Limpa form
+    ['novoTitulo','novaDesc','novaData'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('novaQtd').value = 30;
+    document.getElementById('novoPreco').value = '5.00';
+    document.getElementById('imgInput').value = '';
+    document.getElementById('imgPreview').style.display = 'none';
+    document.querySelector('#uploadArea p').textContent = '📷 Clique para escolher uma imagem';
+    setTimeout(() => msg.textContent = '', 4000);
     carregarDados();
   }
 
+  // ENCERRAR
   async function encerrarSorteio(id) {
-    if (!confirm('Encerrar este sorteio? Novos pagamentos não serão mais aceitos.')) return;
+    if (!confirm('Encerrar este sorteio? Novos pagamentos não serão aceitos.')) return;
     await fetch('/api/admin-sorteios', {
       method: 'PATCH',
       headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
@@ -278,37 +387,103 @@
     carregarDados();
   }
 
+  // PARTICIPANTES
   async function carregarParticipantes() {
-    const sorteioRes = await fetch('/api/admin-sorteios', {
+    if (!sorteioAtivo) { document.getElementById('tabelaParticipantes').innerHTML = '<p style="color:#888">Nenhum sorteio ativo.</p>'; return; }
+    const res = await fetch(`/api/admin-participantes?sorteio_id=${sorteioAtivo.id}`, {
       headers: { 'Authorization': `Bearer ${token}` },
     });
-    const sorteios = await sorteioRes.json();
-    const ativo = sorteios.find(s => s.ativo);
-    if (!ativo) {
-      document.getElementById('tabelaParticipantes').innerHTML = '<p style="color:#888">Nenhum sorteio ativo.</p>';
-      return;
-    }
+    participantesAtivos = await res.json();
 
-    const res = await fetch(`/api/admin-participantes?sorteio_id=${ativo.id}`, {
-      headers: { 'Authorization': `Bearer ${token}` },
-    });
-    const parts = await res.json();
-
-    document.getElementById('tabelaParticipantes').innerHTML = parts.length ? `
-      <p style="color:#888;font-size:.85rem;margin-bottom:12px">${parts.length} participante(s) — ${ativo.titulo}</p>
+    document.getElementById('tabelaParticipantes').innerHTML = participantesAtivos.length ? `
+      <p style="color:#888;font-size:.85rem;margin-bottom:12px">${participantesAtivos.length} participante(s) — ${sorteioAtivo.titulo}</p>
+      <div style="overflow-x:auto">
       <table>
         <thead><tr><th>Nome</th><th>WhatsApp</th><th>E-mail</th><th>Números</th><th>Total</th><th>Data</th></tr></thead>
-        <tbody>${parts.map(p => `
+        <tbody>${participantesAtivos.map(p => `
           <tr>
             <td>${p.nome}</td>
             <td>${p.telefone}</td>
             <td>${p.email}</td>
             <td><span class="nums-badge">${p.numeros}</span></td>
-            <td>${p.total_reais || '—'}</td>
+            <td>${p.total_reais||'—'}</td>
             <td>${new Date(p.created_at).toLocaleDateString('pt-BR')}</td>
           </tr>`).join('')}
         </tbody>
-      </table>` : '<p style="color:#888">Nenhum participante ainda.</p>';
+      </table></div>` : '<p style="color:#888">Nenhum participante ainda.</p>';
+  }
+
+  // REALIZAR SORTEIO
+  async function realizarSorteio() {
+    if (!sorteioAtivo) { alert('Nenhum sorteio ativo.'); return; }
+    if (numerosVendidos.length === 0) { alert('Nenhum número vendido ainda.'); return; }
+    if (!confirm('Realizar o sorteio agora? Um número será sorteado aleatoriamente entre os vendidos.')) return;
+
+    // Animação de sorteio
+    const modal = document.getElementById('modalSorteio');
+    const numEl = document.getElementById('numeroSorteado');
+    modal.classList.remove('hidden');
+    document.getElementById('ganhadorInfo').innerHTML = '';
+
+    let count = 0;
+    const interval = setInterval(() => {
+      const rand = numerosVendidos[Math.floor(Math.random() * numerosVendidos.length)];
+      numEl.textContent = rand;
+      count++;
+      if (count > 20) {
+        clearInterval(interval);
+        // Sorteio final
+        const sorteado = numerosVendidos[Math.floor(Math.random() * numerosVendidos.length)];
+        numEl.textContent = sorteado;
+
+        // Encontra o ganhador
+        const ganhador = participantesAtivos.find(p =>
+          p.numeros.split(',').map(n => parseInt(n.trim())).includes(sorteado)
+        );
+        ganhadorAtual = { numero: sorteado, participante: ganhador };
+
+        document.getElementById('ganhadorInfo').innerHTML = ganhador ? `
+          <p>🏆 <strong>Ganhador:</strong> ${ganhador.nome}</p>
+          <p>📱 <strong>WhatsApp:</strong> ${ganhador.telefone}</p>
+          <p>📧 <strong>E-mail:</strong> ${ganhador.email}</p>
+          <p>🎯 <strong>Número sorteado:</strong> ${sorteado}</p>` :
+          `<p style="color:#888">Participante não encontrado para o número ${sorteado}.</p>`;
+      }
+    }, 80);
+  }
+
+  async function salvarGanhador() {
+    if (!ganhadorAtual || !sorteioAtivo) return;
+    await fetch('/api/admin-sorteios', {
+      method: 'PATCH',
+      headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        id: sorteioAtivo.id,
+        ganhador_numero: ganhadorAtual.numero,
+        ganhador_nome: ganhadorAtual.participante?.nome || 'Desconhecido',
+        ativo: false,
+      }),
+    });
+    fecharModal();
+    alert(`✓ Ganhador salvo! Número ${ganhadorAtual.numero} — ${ganhadorAtual.participante?.nome||''}`);
+    carregarDados();
+  }
+
+  function fecharModal() { document.getElementById('modalSorteio').classList.add('hidden'); }
+
+  // EXPORTAR CSV
+  function exportarCSV() {
+    if (!participantesAtivos.length) { alert('Nenhum participante para exportar.'); return; }
+    const header = 'Nome,WhatsApp,Email,CPF,Números,Total,Data';
+    const rows = participantesAtivos.map(p =>
+      `"${p.nome}","${p.telefone}","${p.email}","${p.cpf||''}","${p.numeros}","${p.total_reais||''}","${new Date(p.created_at).toLocaleDateString('pt-BR')}"`
+    );
+    const csv = [header, ...rows].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `participantes-${sorteioAtivo?.titulo||'sorteio'}.csv`;
+    a.click();
   }
 
   document.getElementById('loginEmail').addEventListener('keydown', e => { if(e.key==='Enter') fazerLogin(); });
