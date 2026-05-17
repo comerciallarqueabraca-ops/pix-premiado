@@ -531,6 +531,9 @@
 
   document.getElementById('loginEmail').addEventListener('keydown', e => { if(e.key==='Enter') fazerLogin(); });
   document.getElementById('loginSenha').addEventListener('keydown', e => { if(e.key==='Enter') fazerLogin(); });
+
+  // Garante que modal começa fechado sempre
+  document.getElementById('modalSorteio').classList.add('hidden');
 </script>
 </body>
 </html>
