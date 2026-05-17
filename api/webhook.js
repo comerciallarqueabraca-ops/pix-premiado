@@ -8,14 +8,8 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Verificar secret
-    const secret = process.env.WEBHOOK_SECRET;
-    const signature = req.headers['x-webhook-secret'] || req.headers['x-abacatepay-signature'] || '';
-    if (secret && signature !== secret) {
-      return res.status(401).json({ error: 'Unauthorized' });
-    }
-
     const event = req.body;
+    console.log('Webhook recebido:', JSON.stringify({ event: event?.event, headers: req.headers }));
 
     // Só processa pagamentos confirmados
     if (event?.event !== 'checkout.completed') {
