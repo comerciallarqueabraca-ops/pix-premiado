@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin – Pix Premiado</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Segoe UI',sans-serif;background:#f5f5f5;min-height:100vh;}
+
+    /* LOGIN */
+    .login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#B5526A,#7A9E7E);}
+    .login-box{background:#fff;border-radius:20px;padding:40px;width:100%;max-width:380px;box-shadow:0 8px 32px rgba(0,0,0,.15);}
+    .login-box h1{color:#B5526A;font-size:1.4rem;margin-bottom:6px;}
+    .login-box p{color:#888;font-size:.85rem;margin-bottom:24px;}
+    .login-box input{width:100%;padding:12px 14px;border:1.5px solid #e0e0e0;border-radius:10px;font-size:.95rem;margin-bottom:12px;outline:none;}
+    .login-box input:focus{border-color:#B5526A;}
+    .btn{width:100%;padding:13px;background:#B5526A;color:#fff;border:none;border-radius:10px;font-size:1rem;font-weight:700;cursor:pointer;}
+    .btn:hover{background:#a04460;}
+    .btn-green{background:#7A9E7E;} .btn-green:hover{background:#6a8e6e;}
+    .btn-sm{width:auto;padding:7px 16px;font-size:.85rem;border-radius:8px;}
+    .btn-outline{background:#fff;color:#B5526A;border:1.5px solid #B5526A;} .btn-outline:hover{background:#fdf0f3;}
+    .error-msg{color:#B5526A;font-size:.85rem;margin-top:8px;text-align:center;}
+
+    /* ADMIN */
+    .admin-screen{display:none;}
+    .topbar{background:#B5526A;color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;}
+    .topbar h1{font-size:1.1rem;}
+    .content{max-width:900px;margin:0 auto;padding:24px 16px;}
+
+    /* TABS */
+    .tabs{display:flex;gap:8px;margin-bottom:20px;}
+    .tab{padding:9px 20px;border-radius:10px;border:1.5px solid #ddd;background:#fff;cursor:pointer;font-weight:600;color:#666;}
+    .tab.active{background:#B5526A;color:#fff;border-color:#B5526A;}
+
+    /* CARDS */
+    .card{background:#fff;border-radius:14px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.07);margin-bottom:16px;}
+    .card h3{color:#B5526A;margin-bottom:14px;}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+    .form-row.full{grid-template-columns:1fr;}
+    label{font-size:.82rem;font-weight:700;color:#555;display:block;margin-bottom:4px;}
+    input[type=text],input[type=number],input[type=date],textarea{width:100%;padding:10px 12px;border:1.5px solid #e0e0e0;border-radius:8px;font-size:.9rem;outline:none;}
+    input:focus,textarea:focus{border-color:#B5526A;}
+
+    /* SORTEIO ATIVO */
+    .sorteio-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:700;}
+    .badge-ativo{background:#e8f5e9;color:#2e7d32;}
+    .badge-inativo{background:#fce4ec;color:#c62828;}
+
+    /* TABELA */
+    table{width:100%;border-collapse:collapse;font-size:.85rem;}
+    th{background:#f5f5f5;padding:10px 12px;text-align:left;color:#555;font-weight:700;}
+    td{padding:10px 12px;border-bottom:1px solid #f0f0f0;color:#333;}
+    tr:hover td{background:#fdf0f3;}
+
+    .nums-badge{background:#F2B8C6;color:#B5526A;padding:2px 8px;border-radius:20px;font-size:.8rem;font-weight:700;}
+    .hidden{display:none;}
+    .section-title{font-size:.8rem;font-weight:700;color:#B5526A;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;}
+    .stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;}
+    .stat{background:#fff;border-radius:12px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.07);text-align:center;}
+    .stat .val{font-size:1.8rem;font-weight:900;color:#B5526A;}
+    .stat .lbl{font-size:.8rem;color:#888;margin-top:4px;}
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <h1>Painel Admin</h1>
+    <p>Pix Premiado – Lar que Abraça</p>
+    <input type="email" id="loginEmail" placeholder="E-mail"/>
+    <input type="password" id="loginSenha" placeholder="Senha"/>
+    <button class="btn" onclick="fazerLogin()">Entrar</button>
+    <div class="error-msg" id="loginErro"></div>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div class="admin-screen" id="adminScreen">
+  <div class="topbar">
+    <h1>Pix Premiado — Admin</h1>
+    <button class="btn btn-sm btn-outline" onclick="sair()" style="color:#fff;border-color:#fff;">Sair</button>
+  </div>
+
+  <div class="content">
+    <div class="tabs">
+      <div class="tab active" onclick="showTab('dashboard')">Dashboard</div>
+      <div class="tab" onclick="showTab('novo')">Novo Sorteio</div>
+      <div class="tab" onclick="showTab('participantes')">Participantes</div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="tab-dashboard">
+      <div class="stat-grid">
+        <div class="stat"><div class="val" id="statNums">-</div><div class="lbl">Números vendidos</div></div>
+        <div class="stat"><div class="val" id="statTotal">-</div><div class="lbl">Total arrecadado</div></div>
+        <div class="stat"><div class="val" id="statRestam">-</div><div class="lbl">Números restantes</div></div>
+      </div>
+
+      <div class="card" id="sorteioAtivoCard">
+        <h3>Sorteio Ativo</h3>
+        <div id="sorteioAtivoInfo">Carregando...</div>
+      </div>
+
+      <div class="card">
+        <h3>Todos os Sorteios</h3>
+        <div id="listaSorteios">Carregando...</div>
+      </div>
+    </div>
+
+    <!-- NOVO SORTEIO -->
+    <div id="tab-novo" class="hidden">
+      <div class="card">
+        <h3>Criar Novo Sorteio</h3>
+        <p style="color:#888;font-size:.85rem;margin-bottom:16px;">Ao criar um novo sorteio, o atual será encerrado automaticamente.</p>
+        <div class="form-row full">
+          <label>Título</label>
+          <input type="text" id="novoTitulo" placeholder="Ex: Pix Premiado – Maio 2026"/>
+        </div>
+        <div class="form-row full">
+          <label>Descrição</label>
+          <textarea id="novaDesc" rows="2" placeholder="Descrição opcional"></textarea>
+        </div>
+        <div class="form-row">
+          <div>
+            <label>Quantidade de números</label>
+            <input type="number" id="novaQtd" value="30" min="1" max="200"/>
+          </div>
+          <div>
+            <label>Preço por número (R$)</label>
+            <input type="number" id="novoPreco" value="5" min="1" step="0.50"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div>
+            <label>Data do sorteio</label>
+            <input type="date" id="novaData"/>
+          </div>
+        </div>
+        <button class="btn btn-green" onclick="criarSorteio()" style="margin-top:8px;">Criar Sorteio</button>
+        <div id="novoMsg" style="margin-top:10px;color:#2e7d32;font-size:.9rem;"></div>
+      </div>
+    </div>
+
+    <!-- PARTICIPANTES -->
+    <div id="tab-participantes" class="hidden">
+      <div class="card">
+        <h3>Participantes do Sorteio Ativo</h3>
+        <div id="tabelaParticipantes">Carregando...</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const SUPABASE_URL = 'https://mjirxarpnptxwznnopbr.supabase.co';
+  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qaXJ4YXJwbnB0eHd6bm5vcGJyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwNDEwMjksImV4cCI6MjA5NDYxNzAyOX0.1Z-OExvb8-xSNew7BZ6I3ZJ0055rsznb7pPSf9XOWw4';
+  let token = null;
+  let sorteioAtivo = null;
+
+  async function fazerLogin() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const senha = document.getElementById('loginSenha').value;
+    document.getElementById('loginErro').textContent = '';
+    const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+      method: 'POST',
+      headers: { 'apikey': SUPABASE_ANON, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password: senha }),
+    });
+    const data = await res.json();
+    if (data.access_token) {
+      token = data.access_token;
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('adminScreen').style.display = 'block';
+      carregarDados();
+    } else {
+      document.getElementById('loginErro').textContent = 'E-mail ou senha incorretos.';
+    }
+  }
+
+  function sair() {
+    token = null;
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('adminScreen').style.display = 'none';
+  }
+
+  function showTab(tab) {
+    ['dashboard','novo','participantes'].forEach(t => {
+      document.getElementById(`tab-${t}`).classList.add('hidden');
+    });
+    document.querySelectorAll('.tab').forEach((el,i) => el.classList.remove('active'));
+    document.getElementById(`tab-${tab}`).classList.remove('hidden');
+    event.target.classList.add('active');
+    if (tab === 'participantes') carregarParticipantes();
+  }
+
+  async function carregarDados() {
+    const res = await fetch('/api/admin-sorteios', {
+      headers: { 'Authorization': `Bearer ${token}` },
+    });
+    const sorteios = await res.json();
+
+    sorteioAtivo = sorteios.find(s => s.ativo) || null;
+
+    // Stats
+    if (sorteioAtivo) {
+      const numsRes = await fetch(`${SUPABASE_URL}/rest/v1/numeros_vendidos?sorteio_id=eq.${sorteioAtivo.id}&select=numero`, {
+        headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}` },
+      });
+      const nums = await numsRes.json();
+      const vendidos = nums.length;
+      const preco = sorteioAtivo.preco_centavos / 100;
+      document.getElementById('statNums').textContent = vendidos;
+      document.getElementById('statTotal').textContent = `R$ ${(vendidos * preco).toFixed(2).replace('.',',')}`;
+      document.getElementById('statRestam').textContent = sorteioAtivo.quantidade_numeros - vendidos;
+
+      document.getElementById('sorteioAtivoInfo').innerHTML = `
+        <strong style="font-size:1.1rem">${sorteioAtivo.titulo}</strong><br>
+        <span class="sorteio-badge badge-ativo">● Ativo</span>
+        <span style="color:#888;font-size:.85rem;margin-left:8px">${sorteioAtivo.quantidade_numeros} números · R$ ${preco.toFixed(2).replace('.',',')} cada${sorteioAtivo.data_sorteio ? ' · Sorteio: '+new Date(sorteioAtivo.data_sorteio).toLocaleDateString('pt-BR') : ''}</span>
+        ${sorteioAtivo.descricao ? `<p style="color:#666;font-size:.85rem;margin-top:8px">${sorteioAtivo.descricao}</p>` : ''}
+        <div style="margin-top:12px">
+          <button class="btn btn-sm" style="background:#c62828;" onclick="encerrarSorteio('${sorteioAtivo.id}')">Encerrar sorteio</button>
+        </div>
+      `;
+    } else {
+      document.getElementById('sorteioAtivoInfo').innerHTML = '<p style="color:#888">Nenhum sorteio ativo. Crie um novo na aba "Novo Sorteio".</p>';
+      document.getElementById('statNums').textContent = '0';
+      document.getElementById('statTotal').textContent = 'R$ 0,00';
+      document.getElementById('statRestam').textContent = '0';
+    }
+
+    // Lista todos
+    document.getElementById('listaSorteios').innerHTML = sorteios.length ? `
+      <table>
+        <thead><tr><th>Título</th><th>Números</th><th>Preço</th><th>Data</th><th>Status</th></tr></thead>
+        <tbody>${sorteios.map(s => `
+          <tr>
+            <td>${s.titulo}</td>
+            <td>${s.quantidade_numeros}</td>
+            <td>R$ ${(s.preco_centavos/100).toFixed(2).replace('.',',')}</td>
+            <td>${s.data_sorteio ? new Date(s.data_sorteio).toLocaleDateString('pt-BR') : '—'}</td>
+            <td><span class="sorteio-badge ${s.ativo ? 'badge-ativo':'badge-inativo'}">${s.ativo ? '● Ativo':'Encerrado'}</span></td>
+          </tr>`).join('')}
+        </tbody>
+      </table>` : '<p style="color:#888">Nenhum sorteio criado ainda.</p>';
+  }
+
+  async function criarSorteio() {
+    const titulo = document.getElementById('novoTitulo').value.trim();
+    if (!titulo) { alert('Informe o título do sorteio'); return; }
+    const preco = parseFloat(document.getElementById('novoPreco').value) * 100;
+    const res = await fetch('/api/admin-sorteios', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        titulo,
+        descricao: document.getElementById('novaDesc').value.trim(),
+        quantidade_numeros: parseInt(document.getElementById('novaQtd').value),
+        preco_centavos: preco,
+        data_sorteio: document.getElementById('novaData').value || null,
+      }),
+    });
+    const data = await res.json();
+    document.getElementById('novoMsg').textContent = '✓ Sorteio criado com sucesso!';
+    setTimeout(() => { document.getElementById('novoMsg').textContent = ''; }, 3000);
+    carregarDados();
+  }
+
+  async function encerrarSorteio(id) {
+    if (!confirm('Encerrar este sorteio? Novos pagamentos não serão mais aceitos.')) return;
+    await fetch('/api/admin-sorteios', {
+      method: 'PATCH',
+      headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, ativo: false }),
+    });
+    carregarDados();
+  }
+
+  async function carregarParticipantes() {
+    const sorteioRes = await fetch('/api/admin-sorteios', {
+      headers: { 'Authorization': `Bearer ${token}` },
+    });
+    const sorteios = await sorteioRes.json();
+    const ativo = sorteios.find(s => s.ativo);
+    if (!ativo) {
+      document.getElementById('tabelaParticipantes').innerHTML = '<p style="color:#888">Nenhum sorteio ativo.</p>';
+      return;
+    }
+
+    const res = await fetch(`/api/admin-participantes?sorteio_id=${ativo.id}`, {
+      headers: { 'Authorization': `Bearer ${token}` },
+    });
+    const parts = await res.json();
+
+    document.getElementById('tabelaParticipantes').innerHTML = parts.length ? `
+      <p style="color:#888;font-size:.85rem;margin-bottom:12px">${parts.length} participante(s) — ${ativo.titulo}</p>
+      <table>
+        <thead><tr><th>Nome</th><th>WhatsApp</th><th>E-mail</th><th>Números</th><th>Total</th><th>Data</th></tr></thead>
+        <tbody>${parts.map(p => `
+          <tr>
+            <td>${p.nome}</td>
+            <td>${p.telefone}</td>
+            <td>${p.email}</td>
+            <td><span class="nums-badge">${p.numeros}</span></td>
+            <td>${p.total_reais || '—'}</td>
+            <td>${new Date(p.created_at).toLocaleDateString('pt-BR')}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>` : '<p style="color:#888">Nenhum participante ainda.</p>';
+  }
+
+  document.getElementById('loginEmail').addEventListener('keydown', e => { if(e.key==='Enter') fazerLogin(); });
+  document.getElementById('loginSenha').addEventListener('keydown', e => { if(e.key==='Enter') fazerLogin(); });
+</script>
+</body>
+</html>
