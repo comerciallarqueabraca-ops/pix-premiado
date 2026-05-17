@@ -16,7 +16,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true, skipped: true });
     }
 
-    const metadata = event?.data?.metadata || {};
+    const metadata = event?.data?.checkout?.metadata || {};
     const { numeros, nome, telefone, email, total_reais } = metadata;
 
     if (!numeros) {
