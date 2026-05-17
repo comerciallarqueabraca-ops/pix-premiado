@@ -137,11 +137,11 @@
 
   let selected = new Set();
 
-  // Carrega números vendidos do Sheets e renderiza a grade
+  // Carrega números vendidos e renderiza a grade
   async function initGrid() {
     let takenNumbers = [];
     try {
-      const resp = await fetch(APPS_SCRIPT_URL);
+      const resp = await fetch('/api/numeros-vendidos');
       const json = await resp.json();
       takenNumbers = json.numeros || [];
     } catch (e) {}
