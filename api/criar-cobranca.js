@@ -3,7 +3,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { numeros, nome, telefone, email } = req.body;
+  const { numeros, nome, telefone, email, cpf } = req.body;
 
   if (!numeros || !nome || !telefone || !email) {
     return res.status(400).json({ error: 'Dados incompletos' });
@@ -26,6 +26,7 @@ export default async function handler(req, res) {
         email,
         name: nome,
         cellphone: telefone,
+        ...(cpf && { taxId: cpf }),
       }),
     });
     const custData = await custResp.json();
