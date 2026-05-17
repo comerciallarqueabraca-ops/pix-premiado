@@ -24,7 +24,8 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         name: `Pix Premiado – Nº ${numerosStr}`,
         description: `Participação no Pix Premiado Lar que Abraça. Números: ${numerosStr}`,
-        price: 500, // R$5,00 por unidade
+        price: 500,
+        currency: 'BRL',
         externalId: `pix-premiado-${Date.now()}`,
       }),
     });
