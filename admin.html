@@ -418,51 +418,60 @@
     if (!sorteioAtivo) { alert('Nenhum sorteio ativo.'); return; }
 
     // Garante que participantes e números estão carregados
-    if (participantesAtivos.length === 0) {
-      const res = await fetch(`/api/admin-participantes?sorteio_id=${sorteioAtivo.id}`, {
+    try {
+      const resP = await fetch(`/api/admin-participantes?sorteio_id=${sorteioAtivo.id}`, {
         headers: { 'Authorization': `Bearer ${token}` },
       });
-      participantesAtivos = await res.json();
-    }
-    if (numerosVendidos.length === 0) {
+      participantesAtivos = await resP.json();
+    } catch(e) { participantesAtivos = []; }
+
+    try {
       const numsRes = await fetch(`${SUPABASE_URL}/rest/v1/numeros_vendidos?sorteio_id=eq.${sorteioAtivo.id}&select=numero`, {
         headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}` },
       });
-      numerosVendidos = (await numsRes.json()).map(n => n.numero);
-    }
+      const numsData = await numsRes.json();
+      numerosVendidos = Array.isArray(numsData) ? numsData.map(n => n.numero) : [];
+    } catch(e) { numerosVendidos = []; }
 
     if (numerosVendidos.length === 0) { alert('Nenhum número vendido ainda.'); return; }
-    if (!confirm('Realizar o sorteio agora? Um número será sorteado aleatoriamente entre os vendidos.')) return;
 
-    // Animação de sorteio
+    // Abre modal e inicia animação
     const modal = document.getElementById('modalSorteio');
     const numEl = document.getElementById('numeroSorteado');
+    const infoEl = document.getElementById('ganhadorInfo');
+    numEl.textContent = '...';
+    infoEl.innerHTML = '';
     modal.classList.remove('hidden');
-    document.getElementById('ganhadorInfo').innerHTML = '';
+
+    // Escolhe número vencedor antes da animação
+    const sorteado = numerosVendidos[Math.floor(Math.random() * numerosVendidos.length)];
 
     let count = 0;
     const interval = setInterval(() => {
       const rand = numerosVendidos[Math.floor(Math.random() * numerosVendidos.length)];
       numEl.textContent = rand;
       count++;
-      if (count > 20) {
+      if (count >= 25) {
         clearInterval(interval);
-        // Sorteio final
-        const sorteado = numerosVendidos[Math.floor(Math.random() * numerosVendidos.length)];
         numEl.textContent = sorteado;
 
-        // Encontra o ganhador
-        const ganhador = participantesAtivos.find(p =>
-          p.numeros.split(',').map(n => parseInt(n.trim())).includes(sorteado)
-        );
+        // Encontra o ganhador — compara número como inteiro e string
+        const ganhador = participantesAtivos.find(p => {
+          if (!p.numeros) return false;
+          const nums = p.numeros.split(',').map(n => parseInt(n.trim()));
+          return nums.includes(Number(sorteado)) || nums.includes(sorteado);
+        });
         ganhadorAtual = { numero: sorteado, participante: ganhador };
 
-        document.getElementById('ganhadorInfo').innerHTML = ganhador ? `
-          <p>🏆 <strong>Ganhador:</strong> ${ganhador.nome}</p>
-          <p>📱 <strong>WhatsApp:</strong> ${ganhador.telefone}</p>
-          <p>📧 <strong>E-mail:</strong> ${ganhador.email}</p>
-          <p>🎯 <strong>Número sorteado:</strong> ${sorteado}</p>` :
-          `<p style="color:#888">Participante não encontrado para o número ${sorteado}.</p>`;
+        if (ganhador) {
+          infoEl.innerHTML = `
+            <p>🏆 <strong>Ganhador:</strong> ${ganhador.nome}</p>
+            <p>📱 <strong>WhatsApp:</strong> ${ganhador.telefone}</p>
+            <p>📧 <strong>E-mail:</strong> ${ganhador.email}</p>
+            <p>🎯 <strong>Número sorteado:</strong> ${sorteado}</p>`;
+        } else {
+          infoEl.innerHTML = `<p style="color:#888">Participante não encontrado para o número ${sorteado}.</p>`;
+        }
       }
     }, 80);
   }
