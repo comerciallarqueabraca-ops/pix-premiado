@@ -58,8 +58,8 @@ export default async function handler(req, res) {
     const checkBody = {
       items: [{ id: productId, quantity: quantidade }],
       methods: ['PIX'],
-      returnUrl: 'https://lojalarqueabraca.com.br/pix-premiado.html',
-      completionUrl: `https://lojalarqueabraca.com.br/pagamento-confirmado.html?numeros=${numeros.join('-')}&nome=${encodeURIComponent(nome)}`,
+      returnUrl: 'https://www.lojalarqueabraca.com.br/pix-premiado.html',
+      completionUrl: `https://www.lojalarqueabraca.com.br/pagamento-confirmado.html?numeros=${numeros.join('-')}&nome=${encodeURIComponent(nome)}`,
       metadata: {
         numeros: numerosStr,
         nome,
