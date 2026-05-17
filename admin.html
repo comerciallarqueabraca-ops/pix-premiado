@@ -416,6 +416,21 @@
   // REALIZAR SORTEIO
   async function realizarSorteio() {
     if (!sorteioAtivo) { alert('Nenhum sorteio ativo.'); return; }
+
+    // Garante que participantes e números estão carregados
+    if (participantesAtivos.length === 0) {
+      const res = await fetch(`/api/admin-participantes?sorteio_id=${sorteioAtivo.id}`, {
+        headers: { 'Authorization': `Bearer ${token}` },
+      });
+      participantesAtivos = await res.json();
+    }
+    if (numerosVendidos.length === 0) {
+      const numsRes = await fetch(`${SUPABASE_URL}/rest/v1/numeros_vendidos?sorteio_id=eq.${sorteioAtivo.id}&select=numero`, {
+        headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}` },
+      });
+      numerosVendidos = (await numsRes.json()).map(n => n.numero);
+    }
+
     if (numerosVendidos.length === 0) { alert('Nenhum número vendido ainda.'); return; }
     if (!confirm('Realizar o sorteio agora? Um número será sorteado aleatoriamente entre os vendidos.')) return;
 
