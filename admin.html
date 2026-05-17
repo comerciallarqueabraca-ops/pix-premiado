@@ -417,33 +417,51 @@
   async function realizarSorteio() {
     if (!sorteioAtivo) { alert('Nenhum sorteio ativo.'); return; }
 
-    // Garante que participantes e números estão carregados
+    const modal = document.getElementById('modalSorteio');
+    const numEl = document.getElementById('numeroSorteado');
+    const infoEl = document.getElementById('ganhadorInfo');
+
+    // Mostra modal com loading
+    numEl.textContent = '⏳';
+    infoEl.innerHTML = '<p style="color:#888">Carregando dados...</p>';
+    modal.classList.remove('hidden');
+
+    // Carrega participantes
+    let erroP = null;
     try {
       const resP = await fetch(`/api/admin-participantes?sorteio_id=${sorteioAtivo.id}`, {
         headers: { 'Authorization': `Bearer ${token}` },
       });
-      participantesAtivos = await resP.json();
-    } catch(e) { participantesAtivos = []; }
+      const dataP = await resP.json();
+      participantesAtivos = Array.isArray(dataP) ? dataP : [];
+    } catch(e) { participantesAtivos = []; erroP = e.message; }
 
+    // Carrega números vendidos
+    let erroN = null;
     try {
       const numsRes = await fetch(`${SUPABASE_URL}/rest/v1/numeros_vendidos?sorteio_id=eq.${sorteioAtivo.id}&select=numero`, {
         headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}` },
       });
       const numsData = await numsRes.json();
       numerosVendidos = Array.isArray(numsData) ? numsData.map(n => n.numero) : [];
-    } catch(e) { numerosVendidos = []; }
+    } catch(e) { numerosVendidos = []; erroN = e.message; }
 
-    if (numerosVendidos.length === 0) { alert('Nenhum número vendido ainda.'); return; }
+    // Mostra debug se vazio
+    if (numerosVendidos.length === 0) {
+      numEl.textContent = '❌';
+      infoEl.innerHTML = `
+        <p style="color:red"><strong>Nenhum número vendido encontrado</strong></p>
+        <p style="font-size:.8rem;color:#888">sorteio_id: ${sorteioAtivo.id}</p>
+        <p style="font-size:.8rem;color:#888">participantes: ${participantesAtivos.length}</p>
+        ${erroP ? `<p style="font-size:.8rem;color:red">Erro participantes: ${erroP}</p>` : ''}
+        ${erroN ? `<p style="font-size:.8rem;color:red">Erro números: ${erroN}</p>` : ''}`;
+      return;
+    }
 
-    // Abre modal e inicia animação
-    const modal = document.getElementById('modalSorteio');
-    const numEl = document.getElementById('numeroSorteado');
-    const infoEl = document.getElementById('ganhadorInfo');
-    numEl.textContent = '...';
+    // Inicia animação
+    numEl.textContent = numerosVendidos[0];
     infoEl.innerHTML = '';
-    modal.classList.remove('hidden');
 
-    // Escolhe número vencedor antes da animação
     const sorteado = numerosVendidos[Math.floor(Math.random() * numerosVendidos.length)];
 
     let count = 0;
@@ -455,11 +473,10 @@
         clearInterval(interval);
         numEl.textContent = sorteado;
 
-        // Encontra o ganhador — compara número como inteiro e string
         const ganhador = participantesAtivos.find(p => {
           if (!p.numeros) return false;
           const nums = p.numeros.split(',').map(n => parseInt(n.trim()));
-          return nums.includes(Number(sorteado)) || nums.includes(sorteado);
+          return nums.includes(Number(sorteado));
         });
         ganhadorAtual = { numero: sorteado, participante: ganhador };
 
@@ -470,7 +487,9 @@
             <p>📧 <strong>E-mail:</strong> ${ganhador.email}</p>
             <p>🎯 <strong>Número sorteado:</strong> ${sorteado}</p>`;
         } else {
-          infoEl.innerHTML = `<p style="color:#888">Participante não encontrado para o número ${sorteado}.</p>`;
+          infoEl.innerHTML = `
+            <p style="color:#888">Participante não encontrado para o número ${sorteado}.</p>
+            <p style="font-size:.75rem;color:#aaa">Participantes carregados: ${participantesAtivos.length} | Números: ${numerosVendidos.join(', ')}</p>`;
         }
       }
     }, 80);
