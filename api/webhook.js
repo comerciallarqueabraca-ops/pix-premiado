@@ -1,3 +1,5 @@
+import crypto from 'crypto';
+
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxVyjxuu-wfJVsziHC71LP1J1dPP3J1eHWVtlGeN-oARVtTJPtoTJJ_pRf_PB5fPwR9/exec';
 
 export default async function handler(req, res) {
@@ -6,6 +8,13 @@ export default async function handler(req, res) {
   }
 
   try {
+    // Verificar secret
+    const secret = process.env.WEBHOOK_SECRET;
+    const signature = req.headers['x-webhook-secret'] || req.headers['x-abacatepay-signature'] || '';
+    if (secret && signature !== secret) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
     const event = req.body;
 
     // Só processa pagamentos confirmados
