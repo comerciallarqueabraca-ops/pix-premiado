@@ -131,24 +131,35 @@
 
 </div>
 <script>
-  const TOTAL    = 30;
-  const PRECO    = 5;
-  const APPS_SCRIPT = 'COLE_AQUI_A_URL_DO_APPS_SCRIPT';
+  const TOTAL = 30;
+  const PRECO = 5;
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxVyjxuu-wfJVsziHC71LP1J1dPP3J1eHWVtlGeN-oARVtTJPtoTJJ_pRf_PB5fPwR9/exec';
 
-  const takenNumbers = []; // ex: [3, 15, 22] — atualizar conforme venderem
   let selected = new Set();
 
-  // Renderizar grade
-  const grid = document.getElementById('numbersGrid');
-  for (let i = 1; i <= TOTAL; i++) {
-    const btn = document.createElement('button');
-    const taken = takenNumbers.includes(i);
-    btn.className = 'num-btn' + (taken ? ' taken' : '');
-    btn.textContent = i;
-    btn.dataset.num = i;
-    if (!taken) btn.onclick = () => toggleNumber(i, btn);
-    grid.appendChild(btn);
+  // Carrega números vendidos do Sheets e renderiza a grade
+  async function initGrid() {
+    let takenNumbers = [];
+    try {
+      const resp = await fetch(APPS_SCRIPT_URL);
+      const json = await resp.json();
+      takenNumbers = json.numeros || [];
+    } catch (e) {}
+
+    const grid = document.getElementById('numbersGrid');
+    grid.innerHTML = '';
+    for (let i = 1; i <= TOTAL; i++) {
+      const btn = document.createElement('button');
+      const taken = takenNumbers.includes(i);
+      btn.className = 'num-btn' + (taken ? ' taken' : '');
+      btn.textContent = i;
+      btn.dataset.num = i;
+      if (!taken) btn.onclick = () => toggleNumber(i, btn);
+      grid.appendChild(btn);
+    }
   }
+
+  initGrid();
 
   function toggleNumber(num, btn) {
     if (selected.has(num)) {
