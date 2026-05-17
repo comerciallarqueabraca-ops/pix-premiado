@@ -78,6 +78,7 @@ export default async function handler(req, res) {
     });
 
     const checkData = await checkResp.json();
+    console.log('Checkout response:', JSON.stringify(checkData));
 
     if (!checkResp.ok || checkData.error) {
       console.error('Checkout error:', checkData);
