@@ -9,7 +9,7 @@ export default async function handler(req, res) {
     const event = req.body;
 
     // Só processa pagamentos confirmados
-    if (event?.event !== 'BILLING.PAID' && event?.data?.status !== 'PAID') {
+    if (event?.event !== 'checkout.completed') {
       return res.status(200).json({ ok: true, skipped: true });
     }
 
