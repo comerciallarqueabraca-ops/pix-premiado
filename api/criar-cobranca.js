@@ -11,16 +11,30 @@ export default async function handler(req, res) {
 
   const quantidade = numeros.length;
   const numerosStr = numeros.join(', ');
-  const total = quantidade * 500; // R$5,00 em centavos
+  const total = quantidade * 500;
+  const headers = {
+    'Authorization': `Bearer ${process.env.ABACATEPAY_API_KEY}`,
+    'Content-Type': 'application/json',
+  };
 
   try {
-    // Passo 1: criar produto dinâmico para esta cobrança
+    // Passo 1: criar cliente para pré-preencher o checkout
+    const custResp = await fetch('https://api.abacatepay.com/v2/customers/create', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        email,
+        name: nome,
+        cellphone: telefone,
+      }),
+    });
+    const custData = await custResp.json();
+    const customerId = custData.data?.id || null;
+
+    // Passo 2: criar produto dinâmico para esta cobrança
     const prodResp = await fetch('https://api.abacatepay.com/v2/products/create', {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${process.env.ABACATEPAY_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
+      headers,
       body: JSON.stringify({
         name: `Pix Premiado – Nº ${numerosStr}`,
         description: `Participação no Pix Premiado Lar que Abraça. Números: ${numerosStr}`,
@@ -39,26 +53,27 @@ export default async function handler(req, res) {
 
     const productId = prodData.data.id;
 
-    // Passo 2: criar checkout com o produto
+    // Passo 3: criar checkout com cliente e produto
+    const checkBody = {
+      items: [{ id: productId, quantity: quantidade }],
+      methods: ['PIX'],
+      returnUrl: 'https://lojalarqueabraca.com.br/pix-premiado.html',
+      completionUrl: `https://lojalarqueabraca.com.br/pagamento-confirmado.html?numeros=${numeros.join('-')}&nome=${encodeURIComponent(nome)}`,
+      metadata: {
+        numeros: numerosStr,
+        nome,
+        telefone,
+        email,
+        total_reais: `R$ ${(total / 100).toFixed(2).replace('.', ',')}`,
+      },
+    };
+
+    if (customerId) checkBody.customerId = customerId;
+
     const checkResp = await fetch('https://api.abacatepay.com/v2/checkouts/create', {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${process.env.ABACATEPAY_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        items: [{ id: productId, quantity: quantidade }],
-        methods: ['PIX'],
-        returnUrl: 'https://lojalarqueabraca.com.br/pix-premiado.html',
-        completionUrl: `https://lojalarqueabraca.com.br/pagamento-confirmado.html?numeros=${numeros.join('-')}&nome=${encodeURIComponent(nome)}`,
-        metadata: {
-          numeros: numerosStr,
-          nome,
-          telefone,
-          email,
-          total_reais: `R$ ${(total / 100).toFixed(2).replace('.', ',')}`,
-        },
-      }),
+      headers,
+      body: JSON.stringify(checkBody),
     });
 
     const checkData = await checkResp.json();
