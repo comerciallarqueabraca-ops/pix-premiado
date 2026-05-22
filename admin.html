@@ -112,6 +112,7 @@
       <div class="tab active" data-tab="dashboard" onclick="showTab('dashboard',this)">Dashboard</div>
       <div class="tab" data-tab="novo" onclick="showTab('novo',this)">Novo Sorteio</div>
       <div class="tab" data-tab="participantes" onclick="showTab('participantes',this)">Participantes</div>
+      <div class="tab" data-tab="venda" onclick="showTab('venda',this)">Venda Manual</div>
     </div>
 
     <!-- DASHBOARD -->
@@ -176,6 +177,58 @@
 
         <button class="btn btn-green btn-full" onclick="criarSorteio()" style="margin-top:8px;">Criar Sorteio</button>
         <div id="novoMsg" style="margin-top:10px;font-size:.9rem;"></div>
+      </div>
+    </div>
+
+    <!-- VENDA MANUAL -->
+    <div id="tab-venda" class="hidden">
+      <div class="card">
+        <h3>Venda Manual</h3>
+        <p style="color:#888;font-size:.85rem;margin-bottom:16px;">Escolha os números, preencha os dados da cliente e gere o link de pagamento PIX para enviar no WhatsApp.</p>
+
+        <div id="vendaGridWrap">
+          <label style="font-size:.8rem;font-weight:700;color:#7A9E7E;letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px;display:block;">Selecione os números</label>
+          <div id="vendaGrid" style="display:grid;grid-template-columns:repeat(8,1fr);gap:7px;margin-bottom:16px;"></div>
+          <div id="vendaResumo" style="background:#fdf0f3;border-radius:10px;padding:10px 14px;font-size:.9rem;color:#B5526A;font-weight:700;margin-bottom:16px;min-height:38px;"></div>
+        </div>
+
+        <div class="form-row">
+          <div>
+            <label>Nome completo *</label>
+            <input type="text" id="vendaNome" placeholder="Nome da cliente"/>
+          </div>
+          <div>
+            <label>WhatsApp *</label>
+            <input type="tel" id="vendaTelefone" placeholder="(48) 99999-9999"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div>
+            <label>E-mail</label>
+            <input type="email" id="vendaEmail" placeholder="email@exemplo.com"/>
+          </div>
+          <div>
+            <label>CPF</label>
+            <input type="text" id="vendaCpf" placeholder="000.000.000-00" maxlength="14" oninput="mascaraCPFVenda(this)"/>
+          </div>
+        </div>
+
+        <button class="btn btn-green btn-full" onclick="gerarLinkVenda()" style="margin-top:4px;">Gerar link de pagamento</button>
+        <div id="vendaMsg" style="margin-top:12px;"></div>
+
+        <!-- Resultado -->
+        <div id="vendaResultado" style="display:none;margin-top:16px;background:#eef5ee;border-radius:14px;padding:18px;">
+          <p style="font-weight:700;color:#2e7d32;margin-bottom:10px;">✓ Link gerado com sucesso!</p>
+          <p style="font-size:.85rem;color:#555;margin-bottom:8px;">Copie o link e envie no WhatsApp da cliente:</p>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <input type="text" id="vendaLink" readonly style="flex:1;font-size:.8rem;background:#fff;"/>
+            <button class="btn btn-sm btn-green" onclick="copiarLink()">Copiar</button>
+          </div>
+          <a id="vendaWppBtn" href="#" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px;padding:12px;border-radius:12px;background:linear-gradient(135deg,#25D366,#1ebe5a);color:#fff;font-weight:900;text-decoration:none;font-size:.95rem;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="white" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+            Enviar link no WhatsApp
+          </a>
+        </div>
       </div>
     </div>
 
@@ -276,11 +329,12 @@
   }
 
   function showTab(tab, el) {
-    ['dashboard','novo','participantes'].forEach(t => document.getElementById(`tab-${t}`).classList.add('hidden'));
+    ['dashboard','novo','participantes','venda'].forEach(t => document.getElementById(`tab-${t}`).classList.add('hidden'));
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     document.getElementById(`tab-${tab}`).classList.remove('hidden');
     el.classList.add('active');
     if (tab === 'participantes') carregarParticipantes();
+    if (tab === 'venda') iniciarVendaManual();
   }
 
   // CARREGAR DADOS
@@ -607,6 +661,139 @@
     msg.style.color = '#2e7d32';
     msg.textContent = '✓ Salvo!';
     setTimeout(() => { fecharModalEditar(); carregarDados(); }, 1000);
+  }
+
+  // VENDA MANUAL
+  let vendaSelecionados = new Set();
+
+  async function iniciarVendaManual() {
+    if (!sorteioAtivo) {
+      document.getElementById('vendaGrid').innerHTML = '<p style="color:#888">Nenhum sorteio ativo.</p>';
+      return;
+    }
+    // Busca números já vendidos
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/numeros_vendidos?sorteio_id=eq.${sorteioAtivo.id}&select=numero`, {
+      headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}` },
+    });
+    const data = await res.json();
+    const ocupados = Array.isArray(data) ? data.map(n => n.numero) : [];
+
+    vendaSelecionados = new Set();
+    document.getElementById('vendaResultado').style.display = 'none';
+    document.getElementById('vendaMsg').textContent = '';
+    renderVendaGrid(ocupados);
+  }
+
+  function renderVendaGrid(ocupados) {
+    const total = sorteioAtivo.quantidade_numeros || 60;
+    const grid = document.getElementById('vendaGrid');
+    grid.style.gridTemplateColumns = `repeat(${Math.min(8, total)}, 1fr)`;
+    grid.innerHTML = '';
+    for (let i = 1; i <= total; i++) {
+      const btn = document.createElement('button');
+      const taken = ocupados.includes(i);
+      if (taken) {
+        btn.className = 'num-btn taken';
+        btn.innerHTML = `<span style="font-size:.7rem;opacity:.4">${i}</span>`;
+        btn.style.cssText = 'aspect-ratio:1;border-radius:10px;border:2px solid #f5c0c0;background:#fff0f0;cursor:not-allowed;position:relative;display:flex;align-items:center;justify-content:center;font-size:.85rem;';
+        btn.innerHTML = `<span style="opacity:.35;font-size:.75rem">${i}</span><span style="position:absolute;font-size:1rem;font-weight:900;color:#e05555">✕</span>`;
+      } else {
+        btn.className = 'num-btn' + (vendaSelecionados.has(i) ? ' selected' : '');
+        btn.style.cssText = 'aspect-ratio:1;border-radius:10px;border:2px solid #F2B8C6;background:#fff;font-weight:900;font-size:.9rem;color:#B5526A;cursor:pointer;transition:all .15s;';
+        btn.textContent = i;
+        btn.onclick = () => toggleVenda(i, btn, ocupados);
+      }
+      grid.appendChild(btn);
+    }
+    atualizarResumoVenda();
+  }
+
+  function toggleVenda(num, btn, ocupados) {
+    if (vendaSelecionados.has(num)) {
+      vendaSelecionados.delete(num);
+      btn.classList.remove('selected');
+      btn.style.background = '#fff';
+      btn.style.color = '#B5526A';
+    } else {
+      vendaSelecionados.add(num);
+      btn.classList.add('selected');
+      btn.style.background = '#B5526A';
+      btn.style.color = '#fff';
+    }
+    atualizarResumoVenda();
+  }
+
+  function atualizarResumoVenda() {
+    const nums = [...vendaSelecionados].sort((a,b) => a-b);
+    const el = document.getElementById('vendaResumo');
+    if (nums.length === 0) {
+      el.textContent = 'Nenhum número selecionado';
+    } else {
+      const preco = (sorteioAtivo.preco_centavos || 500) / 100;
+      const total = (nums.length * preco).toFixed(2).replace('.',',');
+      el.innerHTML = `<strong>${nums.length} número${nums.length>1?'s':''}</strong>: ${nums.join(', ')} &nbsp;·&nbsp; Total: <strong>R$ ${total}</strong>`;
+    }
+  }
+
+  function mascaraCPFVenda(input) {
+    let v = input.value.replace(/\D/g, '').slice(0, 11);
+    if (v.length > 9) v = v.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/, '$1.$2.$3-$4');
+    else if (v.length > 6) v = v.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
+    else if (v.length > 3) v = v.replace(/(\d{3})(\d{1,3})/, '$1.$2');
+    input.value = v;
+  }
+
+  async function gerarLinkVenda() {
+    const nums = [...vendaSelecionados].sort((a,b) => a-b);
+    if (nums.length === 0) { alert('Selecione pelo menos um número.'); return; }
+    const nome = document.getElementById('vendaNome').value.trim();
+    const telefone = document.getElementById('vendaTelefone').value.trim();
+    if (!nome) { alert('Informe o nome da cliente.'); return; }
+    if (!telefone) { alert('Informe o WhatsApp da cliente.'); return; }
+
+    const email = document.getElementById('vendaEmail').value.trim() || `${nome.toLowerCase().replace(/\s+/g,'.')}@semmail.com`;
+    const cpf = document.getElementById('vendaCpf').value.replace(/\D/g,'');
+
+    const msg = document.getElementById('vendaMsg');
+    msg.style.color = '#555';
+    msg.textContent = '⏳ Gerando link...';
+
+    try {
+      const res = await fetch('/api/criar-cobranca', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ numeros: nums, nome, telefone, email, cpf }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.url) throw new Error(data.error || 'Erro ao gerar link');
+
+      msg.textContent = '';
+      document.getElementById('vendaLink').value = data.url;
+      document.getElementById('vendaResultado').style.display = 'block';
+
+      const numStr = nums.join(', ');
+      const preco = (sorteioAtivo.preco_centavos || 500) / 100;
+      const total = (nums.length * preco).toFixed(2).replace('.',',');
+      const wppMsg = encodeURIComponent(
+        `Olá ${nome}! 🎉\nAqui está o link para pagar seu${nums.length>1?'s':''} número${nums.length>1?'s':''} do Pix Premiado:\n\n${data.url}\n\nNúmero${nums.length>1?'s':''}: ${numStr}\nTotal: R$ ${total}\n\nApós o pagamento você receberá a confirmação. Deus abençoe! ♥`
+      );
+      const tel = telefone.replace(/\D/g,'');
+      document.getElementById('vendaWppBtn').href = `https://wa.me/55${tel}?text=${wppMsg}`;
+
+    } catch(e) {
+      msg.style.color = '#B5526A';
+      msg.textContent = 'Erro: ' + e.message;
+    }
+  }
+
+  function copiarLink() {
+    const input = document.getElementById('vendaLink');
+    input.select();
+    navigator.clipboard.writeText(input.value).then(() => {
+      const btn = event.target;
+      btn.textContent = '✓ Copiado!';
+      setTimeout(() => btn.textContent = 'Copiar', 2000);
+    });
   }
 
   // EXPORTAR CSV
