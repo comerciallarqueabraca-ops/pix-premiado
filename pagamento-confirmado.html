@@ -74,6 +74,16 @@
     .btn-wpp svg{width:22px;height:22px;fill:#fff;flex-shrink:0;}
 
     .footer{color:#c49aa4;font-size:.75rem;display:flex;align-items:center;gap:6px;}
+
+    .btn-pdf{
+      display:flex;align-items:center;justify-content:center;gap:10px;
+      width:100%;padding:15px;border-radius:16px;border:none;
+      background:linear-gradient(135deg,#B5526A,#c96882);
+      color:#fff;font-size:1rem;font-weight:900;cursor:pointer;
+      box-shadow:0 4px 16px rgba(181,82,106,.3);transition:all .2s;
+      animation:fadeUp .5s .65s both;text-decoration:none;
+    }
+    .btn-pdf:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(181,82,106,.4);}
   </style>
 </head>
 <body>
@@ -129,6 +139,11 @@
     Enviar comprovante no WhatsApp
   </a>
 
+  <button class="btn-pdf" onclick="baixarPDF()">
+    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="white" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM8 17h8v1.5H8V17zm0-3h8v1.5H8V14zm0-3h5v1.5H8V11z"/></svg>
+    Baixar comprovante em PDF
+  </button>
+
   <div class="footer">
     <span style="color:#F2B8C6">♥</span>
     <span>lojalarqueabraca.com.br</span>
@@ -136,9 +151,10 @@
   </div>
 
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
   const params = new URLSearchParams(window.location.search);
-  const numerosParam = params.get('numeros'); // ex: "3-7-15"
+  const numerosParam = params.get('numeros');
   const nome = params.get('nome') || '';
 
   const nums = numerosParam ? numerosParam.split('-').map(Number).filter(Boolean).sort((a,b)=>a-b) : [];
@@ -167,7 +183,140 @@
   const msg = encodeURIComponent(
     `Olá Juli! Meu nome é ${nome || 'participante'} e acabei de pagar o Pix Premiado 🎉\nMeus números: ${numStr}\nSegue o comprovante! 😊`
   );
-  document.getElementById('wppBtn').href = `https://wa.me/5548962700066?text=${msg}`;
+  document.getElementById('wppBtn').href = `https://wa.me/5548996270066?text=${msg}`;
+
+  // GERAR PDF
+  function baixarPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+
+    const W = doc.internal.pageSize.getWidth();
+    const rosa = [181, 82, 106];
+    const verde = [122, 158, 126];
+    const cinza = [100, 100, 100];
+
+    // Fundo header
+    doc.setFillColor(...rosa);
+    doc.rect(0, 0, W, 40, 'F');
+
+    // Título header
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(22);
+    doc.text('PIX PREMIADO', W / 2, 18, { align: 'center' });
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Lar que Abraça | Mesa Posta', W / 2, 28, { align: 'center' });
+    doc.text('@lojalarqueabraca', W / 2, 35, { align: 'center' });
+
+    // Badge confirmado
+    doc.setFillColor(...verde);
+    doc.roundedRect(W/2 - 40, 45, 80, 12, 3, 3, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(10);
+    doc.text('✓ PAGAMENTO CONFIRMADO', W / 2, 53, { align: 'center' });
+
+    // Dados do participante
+    let y = 70;
+    doc.setTextColor(...rosa);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(13);
+    doc.text('Dados do Participante', 20, y);
+
+    doc.setDrawColor(...rosa);
+    doc.setLineWidth(0.5);
+    doc.line(20, y + 3, W - 20, y + 3);
+
+    y += 14;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(11);
+    doc.setTextColor(...cinza);
+
+    if (nome) {
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(50, 50, 50);
+      doc.text('Nome:', 20, y);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(...cinza);
+      doc.text(nome, 50, y);
+      y += 9;
+    }
+
+    const dataCompra = new Date().toLocaleDateString('pt-BR', {
+      day: '2-digit', month: 'long', year: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    });
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(50, 50, 50);
+    doc.text('Data:', 20, y);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...cinza);
+    doc.text(dataCompra, 50, y);
+    y += 9;
+
+    const total = nums.length * 5;
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(50, 50, 50);
+    doc.text('Total pago:', 20, y);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...verde);
+    doc.text(`R$ ${total.toFixed(2).replace('.',',')}`, 50, y);
+    y += 18;
+
+    // Números sorteados
+    doc.setTextColor(...rosa);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(13);
+    doc.text(`Seu${nums.length > 1 ? 's' : ''} Número${nums.length > 1 ? 's' : ''} da Sorte`, 20, y);
+    doc.line(20, y + 3, W - 20, y + 3);
+    y += 14;
+
+    // Grid de números
+    const boxSize = 14;
+    const gap = 4;
+    const perRow = Math.floor((W - 40) / (boxSize + gap));
+    nums.forEach((n, i) => {
+      const col = i % perRow;
+      const row = Math.floor(i / perRow);
+      const x = 20 + col * (boxSize + gap);
+      const ny = y + row * (boxSize + gap);
+      doc.setFillColor(...rosa);
+      doc.roundedRect(x, ny, boxSize, boxSize, 2, 2, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(9);
+      doc.text(String(n), x + boxSize / 2, ny + boxSize / 2 + 3, { align: 'center' });
+    });
+
+    const rows = Math.ceil(nums.length / perRow);
+    y += rows * (boxSize + gap) + 14;
+
+    // Rodapé instrucoes
+    doc.setFillColor(253, 240, 243);
+    doc.roundedRect(15, y, W - 30, 38, 4, 4, 'F');
+    doc.setTextColor(...rosa);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(10);
+    doc.text('Próximos passos:', 22, y + 9);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...cinza);
+    doc.setFontSize(9.5);
+    doc.text('1. Guarde este comprovante.', 22, y + 18);
+    doc.text('2. Envie o comprovante do Pix no WhatsApp (48) 99627-0066.', 22, y + 26);
+    doc.text('3. Acompanhe o sorteio ao vivo no Instagram @lojalarqueabraca.', 22, y + 34);
+
+    y += 50;
+    // Rodapé final
+    doc.setFillColor(...rosa);
+    doc.rect(0, doc.internal.pageSize.getHeight() - 14, W, 14, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.text('www.lojalarqueabraca.com.br  |  Lar que Abraça | Mesa Posta', W / 2, doc.internal.pageSize.getHeight() - 5, { align: 'center' });
+
+    doc.save(`pix-premiado-${nome.replace(/\s+/g,'-').toLowerCase() || 'comprovante'}.pdf`);
+  }
 </script>
 </body>
 </html>
