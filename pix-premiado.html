@@ -42,7 +42,9 @@
     .num-btn:hover{background:#fdf0f3;transform:scale(1.06);}
     .num-btn.selected{background:#B5526A;color:#fff;border-color:#B5526A;transform:scale(1.06);box-shadow:0 4px 12px rgba(181,82,106,.3);}
     .num-btn.selected::after{content:'✓';position:absolute;top:2px;right:5px;font-size:.55rem;opacity:.8;}
-    .num-btn.taken{background:#f0f0f0;color:#bbb;border-color:#e0e0e0;cursor:not-allowed;transform:none;}
+    .num-btn.taken{background:#fff0f0;color:#e0a0a0;border-color:#f5c0c0;cursor:not-allowed;transform:none;position:relative;}
+    .num-btn.taken::before{content:'✕';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:1.1rem;font-weight:900;color:#e05555;opacity:.85;}
+    .num-btn.taken span{opacity:.35;font-size:.7rem;}
 
     /* Resumo selecionados */
     .summary-bar{
@@ -182,7 +184,7 @@
       const btn = document.createElement('button');
       const taken = takenNumbers.includes(i);
       btn.className = 'num-btn' + (taken ? ' taken' : '');
-      btn.textContent = i;
+      btn.innerHTML = taken ? `<span>${i}</span>` : i;
       btn.dataset.num = i;
       if (!taken) btn.onclick = () => toggleNumber(i, btn);
       grid.appendChild(btn);
